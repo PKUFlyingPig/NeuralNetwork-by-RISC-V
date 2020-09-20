@@ -3,8 +3,7 @@
 .text
 # ==============================================================================
 # FUNCTION: Allocates memory and reads in a binary file as a matrix of integers
-#   If any file operation fails or doesn't read the proper number of bytes,
-#   exit the program with exit code 1.
+#
 # FILE FORMAT:
 #   The first 8 bytes are two 4 byte ints representing the # of rows and columns
 #   in the matrix. Every 4 bytes afterwards is an element of the matrix in
