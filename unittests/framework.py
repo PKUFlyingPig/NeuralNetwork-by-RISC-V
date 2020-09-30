@@ -324,6 +324,15 @@ class AssemblyTest:
         lines += [f".import ../../src/{i}" for i in self._imports]
         lines += ["", ".data"] + self.data
         lines += ["", ".globl main_test", ".text", "# main_test function for testing", "main_test:"]
+
+        # prologue
+        if len(self._output_regs) > 0:
+            assert len(self._output_regs) < 13, f"Too many output registers: {len(self._output_regs)}!"
+            p = ["# Prologue", f"addi sp, sp, -{4 * (len(self._output_regs) + 1)}", "sw ra, 0(sp)"]
+            p += [f"sw s{i}, {(i+1) * 4}(sp)" for i in range(len(self._output_regs))]
+            lines += _indent(p + [""])
+
+
         lines += _indent(self._args)
 
         assert self._call is not None, "No function was called!"
@@ -338,7 +347,15 @@ class AssemblyTest:
         if code != 0:
             lines += _indent([f"# we expect {self._call} to exit early with code {code}"])
 
-        lines += _indent(["", "# exit normally", "jal exit"])
+        lines += _indent(["", "# exit normally"])
+        # epilogue
+        if len(self._output_regs) > 0:
+            p = ["# Epilogue", "lw ra, 0(sp)"]
+            p += [f"lw s{i}, {(i + 1) * 4}(sp)" for i in range(len(self._output_regs))]
+            p += [f"addi sp, sp, {4 * (len(self._output_regs) + 1)}"]
+            lines += _indent(p + [""])
+        # lines += _indent(["mv a0, zero", "ret"])
+        lines += _indent(["jal exit"])
         lines += [""]
 
         if verbose: print()
