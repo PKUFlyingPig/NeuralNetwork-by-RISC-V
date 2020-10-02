@@ -192,7 +192,8 @@ class AssemblyTest:
     def input_read_filename(self, register: str, filename: str):
         """ Provides a filename string input through an "a" register """
         full_path = _root_dir / filename
-        assert full_path.is_file(), f"Input file {full_path} does not exist!"
+        if not full_path.is_file():
+            print(f"WARN: Input file {full_path} does not exist.")
         self._input_filename(register, filename)
 
     def input_write_filename(self, register: str, filename: str):
