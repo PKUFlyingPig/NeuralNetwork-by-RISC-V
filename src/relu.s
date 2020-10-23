@@ -13,26 +13,21 @@
 #   this function terminates the program with error code 78.
 # ==============================================================================
 relu:
-    # Prologue
-
-
+	# check if the length is positive
+    li t0, 1
+    ble t0, a1, no_exception
+    li a1, 78
+    j exit2
+no_exception:
+	add t0, x0, x0 # i = 0
 loop_start:
-    
-
-
-
-
-
-
-
+    lw t1, 0(a0) # t1 = a[i]
+    bge t1, zero, loop_continue
+	sw x0, 0(a0)
 loop_continue:
-
-
-
-loop_end:
-
-
-    # Epilogue
-
-    
+	addi a0, a0, 4
+	addi t0, t0, 1
+    beq t0, a1, loop_end
+	j loop_start
+loop_end:  
 	ret
